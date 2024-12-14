@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="styles.css">
+    <title>Task Manager</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header>
+        <h1>Task Manager</h1>
+    </header>
+    <div class="container">
+        <!-- Kontener autoryzacji -->
+<!-- Kontener autoryzacji -->
+<div id="auth-container">
+    <!-- Formularz logowania -->
+    <div id="login-container">
+        <img src="img/logo.webp" alt="logo" class="logo">
+        <h2>Logowanie</h2>
+        <input type="text" id="login-username" placeholder="Nazwa użytkownika" />
+        <input type="password" id="login-password" placeholder="Hasło" />
+        <button id="login-button">Zaloguj</button>
+        <p>Nie masz konta? <a href="#" id="show-register">Zarejestruj się</a></p>
+    </div>
+
+    <!-- Formularz rejestracji -->
+    <div id="register-container" style="display: none;">
+        <img src="img/logo.webp" alt="logo" class="logo">
+        <h2>Rejestracja</h2>
+        <input type="text" id="reg-username" placeholder="Nazwa użytkownika" />
+        <input type="password" id="reg-password" placeholder="Hasło" />
+        <button id="register-button">Zarejestruj</button>
+        <p>Masz już konto? <a href="#" id="show-login">Zaloguj się</a></p>
+    </div>
+</div>
+
+
+        <!-- Główna zawartość aplikacji -->
+        <div id="app-container" style="display: none;">
+            <div class="welcome-header">
+                <h2>Witaj, <span id="username-display"></span>!</h2>
+                <button id="logout-button">Wyloguj</button>
+            </div>
+            <h2>Zarządzanie zadaniami</h2>
+            <div class="task-controls">
+                <input type="text" id="task-input" placeholder="Dodaj nowe zadanie..." />
+                <input type="datetime-local" id="task-deadline" />
+                <select id="task-category">
+                    <option value="praca">Praca</option>
+                    <option value="dom">Dom</option>
+                    <option value="nauka">Nauka</option>
+                </select>
+                <button id="add-task">Dodaj</button>
+                <button id="sort-tasks">Sortuj według terminu</button>
+            </div>
+            <ul id="task-list"></ul>
+        </div>
+        <div id="calendar-container">
+            <div id="calendar-header">
+                <button id="prev-month">Poprzedni</button>
+                <span id="current-month-year">Miesiąc Rok</span>
+                <button id="next-month">Następny</button>
+            </div>
+            <div id="calendar"></div>
+        </div>
+        <br></br>
+        <br></br>
+    </div>
+    <script src="app.js"></script>
+</body>
+</html>

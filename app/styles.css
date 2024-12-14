@@ -1,0 +1,339 @@
+/* Ogólne stylowanie */
+body {
+    font-family: 'Roboto', sans-serif;
+    margin: 0;
+    padding: 0;
+    background: linear-gradient(135deg, #f3f4f7, #ffffff);
+    color: #333;
+    box-sizing: border-box;
+}
+
+/* Nagłówek */
+header {
+    background-color: #3a5d99;
+    color: white;
+    text-align: center;
+    padding: 15px 20px;
+    font-size: 1.8rem;
+    font-weight: 700;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* Kontener logowania/rejestracji */
+#auth-container {
+    max-width: 400px;
+    margin: 50px auto;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    padding: 30px;
+    text-align: center;
+}
+
+#auth-container h2 {
+    font-size: 1.5rem;
+    margin-bottom: 20px;
+    color: #333;
+}
+
+#auth-container input,
+#auth-container button {
+    width: calc(100% - 20px);
+    margin: 10px auto;
+    padding: 12px;
+    border-radius: 8px;
+    font-size: 1rem;
+    border: 1px solid #ddd;
+    display: block;
+    box-sizing: border-box;
+}
+
+#auth-container button {
+    background-color: #3a5d99;
+    color: white;
+    border: none;
+    cursor: pointer;
+    font-weight: 500;
+    transition: background-color 0.3s ease;
+}
+
+#auth-container button:hover {
+    background-color: #334a8c;
+}
+
+#auth-container a {
+    color: #3a5d99;
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+#auth-container a:hover {
+    color: #1f3f6d;
+}
+
+/* Kontener aplikacji */
+#app-container {
+    max-width: 800px;
+    margin: 50px auto;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    padding: 30px;
+    display: none;
+}
+
+/* Powitanie użytkownika */
+.welcome-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.welcome-header h2 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #3a5d99;
+    margin: 0;
+}
+
+#logout-button {
+    background-color: #f44336;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 8px;
+    color: white;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+#logout-button:hover {
+    background-color: #d32f2f;
+}
+
+/* Zarządzanie zadaniami */
+.task-controls {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.task-controls input,
+.task-controls select,
+.task-controls button {
+    flex: 1 1 auto;
+    padding: 12px;
+    border-radius: 8px;
+    font-size: 0.95rem;
+    border: 1px solid #ddd;
+}
+
+.task-controls button {
+    background-color: #3a5d99;
+    color: white;
+    border: none;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.task-controls button:hover {
+    background-color: #334a8c;
+}
+
+/* Lista zadań */
+#task-list {
+    list-style: none;
+    padding: 0;
+    margin: 20px 0;
+}
+
+.task {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px;
+    border-radius: 8px;
+    margin-bottom: 10px;
+    background: #f9f9f9;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+    transition: box-shadow 0.2s ease, transform 0.2s ease;
+}
+
+.task:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+/* Kontener kalendarza */
+#calendar-container {
+    margin-top: 20px;
+    padding: 20px;
+    background: #f8f8f8;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    font-family: 'Roboto', sans-serif;
+}
+.logo {
+    width: 200px; /* Szerokość logo */
+    height: 200px; /* Wysokość logo */
+    border-radius: 40%; /* Okrągły kształt */
+    object-fit: cover; /* Dopasowanie obrazu */
+    margin: 10px auto; /* Wyśrodkowanie logo */
+    display: block; /* Wyśrodkowanie poziome */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Subtelny cień */
+    border: 2px solid #ddd; /* Opcjonalna ramka */
+}
+/* Nagłówek kalendarza */
+#calendar-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    font-size: 1.2rem;
+}
+
+#calendar-header button {
+    padding: 10px 15px;
+    border-radius: 5px;
+    background-color: #3a5d99;
+    color: white;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+#calendar-header button:hover {
+    background-color: #334a8c;
+}
+
+#current-month-year {
+    font-weight: bold;
+    color: #3a5d99;
+}
+
+/* Kontener kalendarza */
+#calendar-container {
+    margin-top: 20px;
+    padding: 20px;
+    background: #f9f9f9;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    font-family: 'Roboto', sans-serif;
+    max-width: 800px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/* Nagłówek kalendarza */
+#calendar-header {
+    display: none;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: #333;
+}
+
+#calendar-header button {
+    padding: 10px 15px;
+    border-radius: 8px;
+    background-color: #3a5d99;
+    color: white;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+
+#calendar-header button:hover {
+    display: none;
+    background-color: #334a8c;
+    transform: scale(1.05);
+}
+
+#current-month-year {
+    color: #3a5d99;
+}
+
+/* Tabela kalendarza */
+#calendar {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 2px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background: #ffffff;
+    overflow: hidden;
+    text-align: center;
+}
+
+/* Nagłówki dni tygodnia */
+.calendar-day-header {
+    font-weight: bold;
+    background-color: #4caf50;
+    color: white;
+    padding: 10px 0;
+    border: 1px solid #ddd;
+    font-size: 0.9rem;
+}
+
+/* Dni kalendarza */
+.calendar-day {
+    text-align: center;
+    padding: 15px;
+    border: 1px solid #ddd;
+    background-color: #ffffff;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    min-height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.calendar-day:hover {
+    background-color: #e8f5e9;
+    transform: scale(1.05);
+}
+
+.calendar-day.empty {
+    background-color: #f5f5f5;
+    cursor: default;
+}
+
+.calendar-day.selected {
+    background-color: #3a5d99;
+    color: white;
+    font-weight: bold;
+    border-color: #2f4673;
+}
+
+/* Responsywność kalendarza */
+@media (max-width: 600px) {
+    #calendar-header {
+        flex-direction: column;
+        align-items: center;
+        gap: 10px;
+    }
+
+    #calendar {
+        gap: 1px;
+    }
+
+    .calendar-day {
+        font-size: 0.8rem;
+        min-height: 50px;
+    }
+}
+
+/* Efekt focus na przyciski */
+button:focus {
+    outline: 2px solid #4caf50;
+    outline-offset: 2px;
+}
+
