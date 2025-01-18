@@ -40,11 +40,14 @@ document.addEventListener("DOMContentLoaded", () => {
             alert("Hasło powinno zawierać co najmniej jeden znak specjalny.");
             return false;
         }
+        if (password.length > 25) {
+            alert("Hasło może mieć maksymalnie 25 znaków.");
+            return false;
+        }
         return true;
     }
 
     // Elementy interfejsu użytkownika
-    // Zbierają wszystkie elementy interfejsu potrzebne do obsługi logowania, rejestracji i głównej aplikacji.
     const authContainer = document.getElementById("auth-container");
     const registerContainer = document.getElementById("register-container");
     const loginContainer = document.getElementById("login-container");
@@ -85,11 +88,49 @@ document.addEventListener("DOMContentLoaded", () => {
     let currentMonth = new Date().getMonth();
     let currentYear = new Date().getFullYear();
 
-    let tasks = []; // Lista zadań użytkownika
-    let users = JSON.parse(localStorage.getItem("users")) || {}; // Pobranie użytkowników z lokalnego magazynu
-    let currentUser = null; // Aktualnie zalogowany użytkownik
+    // *** LISTA ZADAŃ UŻYTKOWNIKA PRZECHOWYWANA W PAMIĘCI ***
+    let tasks = [];
+    // *** STRUKTURA UŻYTKOWNIKÓW POZYSKIWANA Z localStorage ***
+    let users = JSON.parse(localStorage.getItem("users")) || {};
+    // *** ZMIENNA PRZECHOWUJĄCA NAZWĘ ZALOGOWANEGO UŻYTKOWNIKA ***
+    let currentUser = null;
 
-    // Nagłówek kalendarza (nawigacja między miesiącami)
+    // -----------------------
+    // FUNKCJE POMOCNICZE
+    // -----------------------
+
+    // Tworzymy dwie funkcje, które będą za każdym razem wczytywać/zapisywać listę zadań do localStorage dla aktualnego użytkownika:
+
+    function loadTasksForCurrentUser() {
+        if (currentUser && users[currentUser].tasks) {
+            tasks = users[currentUser].tasks;
+        } else {
+            tasks = [];
+        }
+    }
+
+    function saveTasksForCurrentUser() {
+        if (currentUser) {
+            // Jeśli użytkownik jeszcze nie ma tablicy tasks, to ją tworzymy
+            if (!users[currentUser].tasks) {
+                users[currentUser].tasks = [];
+            }
+            users[currentUser].tasks = tasks;
+            localStorage.setItem("users", JSON.stringify(users));
+        }
+    }
+
+    // Funkcja do oczyszczania wejścia użytkownika (zabezpieczenie przed XSS)
+    function sanitizeInput(input) {
+        const div = document.createElement("div");
+        div.textContent = input;
+        return div.innerHTML;
+    }
+
+    // -----------------------
+    // KALENDARZ
+    // -----------------------
+    // Dodajemy przyciski i nagłówek do kalendarza
     const calendarHeader = document.createElement("div");
     calendarHeader.style.display = "flex";
     calendarHeader.style.justifyContent = "space-between";
@@ -112,15 +153,7 @@ document.addEventListener("DOMContentLoaded", () => {
         "Lipiec", "Sierpień", "Wrzesień", "Październik", "Listopad", "Grudzień"
     ];
 
-    // Funkcja do oczyszczania wejścia użytkownika (zabezpieczenie przed XSS)
-    function sanitizeInput(input) {
-        const div = document.createElement("div");
-        div.textContent = input;
-        return div.innerHTML;
-    }
-
     // Funkcja generująca kalendarz
-    // Tworzy wizualizację dni miesiąca i oznacza dni z zadaniami.
     function generateCalendar(month, year) {
         calendar.innerHTML = "";
         monthYearDisplay.textContent = `${months[month]} ${year}`;
@@ -128,17 +161,20 @@ document.addEventListener("DOMContentLoaded", () => {
         const firstDay = new Date(year, month, 1).getDay();
         const daysInMonth = new Date(year, month + 1, 0).getDate();
 
+        // Wypełniamy pustymi polami przed pierwszym dniem miesiąca
         for (let i = 0; i < firstDay; i++) {
             const emptyCell = document.createElement("div");
             emptyCell.classList.add("calendar-day");
             calendar.appendChild(emptyCell);
         }
 
+        // Kolejne dni miesiąca
         for (let day = 1; day <= daysInMonth; day++) {
             const dayCell = document.createElement("div");
             dayCell.classList.add("calendar-day");
             dayCell.textContent = day;
 
+            // Oznaczanie dni, w których jest zadanie
             const dayDate = new Date(year, month, day).toISOString().split("T")[0];
             const hasTask = tasks.some(task => task.deadline.startsWith(dayDate));
             if (hasTask) {
@@ -150,7 +186,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     }
 
-    // Wyświetlanie zadań dla konkretnego dnia
+    // Wyświetlanie zadań dla konkretnego dnia (w alercie)
     function showTasksForDate(date) {
         const filteredTasks = tasks.filter(task => task.deadline.startsWith(date));
         alert(`Zadania na ${date}:
@@ -182,6 +218,10 @@ ${filteredTasks.map(task => `- ${sanitizeInput(task.text)}`).join("\n") || "Brak
         updateCalendar();
     });
 
+    // -----------------------
+    // REJESTRACJA / LOGOWANIE
+    // -----------------------
+
     // Przełączanie między widokiem rejestracji i logowania
     showRegisterLink.addEventListener("click", () => {
         loginContainer.style.display = "none";
@@ -200,14 +240,15 @@ ${filteredTasks.map(task => `- ${sanitizeInput(task.text)}`).join("\n") || "Brak
 
         if (username && password) {
             if (!validatePassword(password)) {
-                return;
+                return; // Jeśli hasło nie przeszło walidacji, kończymy
             }
             if (users[username]) {
                 alert("Użytkownik o tej nazwie już istnieje.");
             } else {
                 const salt = generateSalt();
                 const hashedPassword = await hashPassword(password, salt);
-                users[username] = { password: hashedPassword, salt: salt };
+                // Tworzymy nowy obiekt użytkownika z pustą tablicą tasks
+                users[username] = { password: hashedPassword, salt: salt, tasks: [] };
                 localStorage.setItem("users", JSON.stringify(users));
                 regUsernameInput.value = "";
                 regPasswordInput.value = "";
@@ -232,10 +273,15 @@ ${filteredTasks.map(task => `- ${sanitizeInput(task.text)}`).join("\n") || "Brak
                     currentUser = username;
                     usernameDisplay.textContent = currentUser;
 
+                    // Wczytujemy zadania z localStorage przypisane do aktualnego użytkownika
+                    loadTasksForCurrentUser();
+
                     authContainer.style.display = "none";
                     appContainer.style.display = "block";
                     calendarContainer.style.display = "block";
+
                     updateCalendar();
+                    renderTasks();
                 } else {
                     alert("Nieprawidłowe hasło.");
                 }
@@ -249,15 +295,21 @@ ${filteredTasks.map(task => `- ${sanitizeInput(task.text)}`).join("\n") || "Brak
 
     // Wylogowanie użytkownika
     logoutButton.addEventListener("click", () => {
+        // Dla pewności zapisujemy stan zadań
+        saveTasksForCurrentUser();
         currentUser = null;
+
         authContainer.style.display = "block";
         appContainer.style.display = "none";
         calendarContainer.style.display = "none";
         taskList.innerHTML = "";
     });
 
+    // -----------------------
+    // ZARZĄDZANIE ZADANIAMI
+    // -----------------------
+
     // Renderowanie listy zadań
-    // Tworzy dynamiczną listę zadań i umożliwia ich usuwanie lub oznaczanie jako zakończone.
     function renderTasks() {
         taskList.innerHTML = "";
         tasks.forEach((task, index) => {
@@ -265,19 +317,21 @@ ${filteredTasks.map(task => `- ${sanitizeInput(task.text)}`).join("\n") || "Brak
             taskItem.textContent = `${sanitizeInput(task.text)} (${sanitizeInput(task.deadline)}) - ${sanitizeInput(task.category)}`;
             if (task.done) taskItem.style.textDecoration = "line-through";
 
-            const deleteButton = document.createElement("button");
-            deleteButton.textContent = "Usuń";
-            deleteButton.addEventListener("click", () => {
-                tasks.splice(index, 1);
-                updateCalendar();
-                renderTasks();
-            });
-
             const completeButton = document.createElement("button");
             completeButton.textContent = "Zakończ";
             completeButton.addEventListener("click", () => {
-                tasks[index].done = !tasks[index].done;
-                renderTasks();
+                tasks[index].done = !tasks[index].done; // Przełączanie stanu zakończone/niezakończone
+                saveTasksForCurrentUser(); // Zapis po zmianie
+                renderTasks(); // Odświeżamy widok listy
+            });
+
+            const deleteButton = document.createElement("button");
+            deleteButton.textContent = "Usuń";
+            deleteButton.addEventListener("click", () => {
+                tasks.splice(index, 1); // Usuwamy z listy
+                saveTasksForCurrentUser(); // Zapis po usunięciu
+                updateCalendar();         // Aktualizujemy kalendarz, bo termin zadania może zniknąć
+                renderTasks();           // Odświeżamy widok
             });
 
             taskItem.appendChild(completeButton);
@@ -294,6 +348,7 @@ ${filteredTasks.map(task => `- ${sanitizeInput(task.text)}`).join("\n") || "Brak
 
         if (taskText && deadline) {
             tasks.push({ text: taskText, deadline, category, done: false });
+            saveTasksForCurrentUser(); // Zapis zadań w localStorage
             taskInput.value = "";
             taskDeadline.value = "";
             renderTasks();
@@ -303,6 +358,17 @@ ${filteredTasks.map(task => `- ${sanitizeInput(task.text)}`).join("\n") || "Brak
         }
     });
 
-    // Inicjalizacja listy zadań
+    // Sortowanie zadań według terminu
+    const sortTasksButton = document.getElementById("sort-tasks");
+    sortTasksButton.addEventListener("click", () => {
+        tasks.sort((a, b) => new Date(a.deadline) - new Date(b.deadline));
+        saveTasksForCurrentUser(); // Zapis po sortowaniu
+        renderTasks();
+        alert("Zadania zostały posortowane według terminu.");
+    });
+
+    // Na starcie aplikacji (przy odświeżeniu strony) – jeżeli ktoś nie jest zalogowany,
+    // i tak nie wyświetlamy zadań, bo currentUser = null.
+    // Zostawiamy jednak wywołanie renderTasks(), aby początkowo była pusta lista.
     renderTasks();
 });
